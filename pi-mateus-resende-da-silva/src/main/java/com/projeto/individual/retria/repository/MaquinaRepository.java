@@ -1,5 +1,6 @@
 package com.projeto.individual.retria.repository;
 
+import com.github.britooo.looca.api.core.Looca;
 import com.github.britooo.looca.api.group.discos.Volume;
 import com.github.britooo.looca.api.group.memoria.Memoria;
 import com.github.britooo.looca.api.group.processador.Processador;
@@ -25,6 +26,8 @@ public class MaquinaRepository {
     private List<RedeInterface> redeAtual = new ArrayList<>();
     private Monitoramento monitoramento = new Monitoramento();
 
+    static Looca looca = new Looca();
+
     JdbcTemplate con;
     JdbcTemplate conMysql;
 
@@ -33,6 +36,75 @@ public class MaquinaRepository {
         con = conexao.getConnection();
         ConexaoMySql conexaoMysql = new ConexaoMySql();
         conMysql = conexaoMysql.getConnection();
+    }
+
+    public void getMaquinaDeUltrassomById(Integer fkAdmin, Integer fkEmpresa) {
+        List<MaquinaUltrassom> maquinasUltra = con.query(String.format("""
+                        select 
+                            m.* 
+                        from 
+                            maquina_ultrassom as m
+                        where 
+                            m.numero_serial_maquina = '%s';
+                        """, looca.getProcessador().getId()),
+                new BeanPropertyRowMapper(MaquinaUltrassom.class));
+
+        List<MaquinaUltrassom> maquinasUltraLocal = conMysql.query(String.format("""
+                        select 
+                            m.* 
+                        from 
+                            maquina_ultrassom as m
+                        where 
+                            m.numero_serial_maquina = '%s';
+                        """, looca.getProcessador().getId()),
+                new BeanPropertyRowMapper(MaquinaUltrassom.class));
+
+        while (maquinasUltra.size() == 0) {
+            con.execute(String.format("""
+                    insert into maquina_ultrassom
+                        (sistema_operacional, numero_serial_maquina, fk_administrador,fk_empresa) 
+                    values
+                        ('%s','%s' ,%d, %d);
+                    """, looca.getSistema().getSistemaOperacional(), looca.getProcessador().getId(), fkAdmin, fkEmpresa));
+
+            maquinasUltra = con.query(String.format("""
+                            select 
+                                m.* 
+                            from 
+                                maquina_ultrassom as m
+                            where 
+                                m.numero_serial_maquina = '%s';
+                            """, looca.getProcessador().getId()),
+                    new BeanPropertyRowMapper(MaquinaUltrassom.class));
+
+        }
+
+        while (maquinasUltraLocal.size() == 0) {
+            MaquinaUltrassom dados = maquinasUltra.get(0);
+
+            conMysql.execute(String.format("""
+                    insert into maquina_ultrassom
+                        (id_maquina,sistema_operacional, numero_serial_maquina, fk_administrador,fk_empresa) 
+                    values
+                        (%d,'%s','%s' ,%d, %d);
+                    """, dados.getIdMaquina(), looca.getSistema().getSistemaOperacional(), looca.getProcessador().getId(), fkAdmin, fkEmpresa));
+
+            maquinasUltraLocal = conMysql.query(String.format("""
+                            select 
+                                m.* 
+                            from 
+                                maquina_ultrassom as m
+                            where 
+                                m.numero_serial_maquina = '%s';
+                            """, looca.getProcessador().getId()),
+                    new BeanPropertyRowMapper(MaquinaUltrassom.class));
+        }
+
+        MaquinaUltrassom dados = maquinasUltra.get(0);
+        System.out.println(dados);
+
+        maquinaUltrassom = new MaquinaUltrassom(dados.getIdMaquina(), dados.getSistemaOperacional(), dados.getNumeroSerialMaquina(),
+                dados.getStatusMaquina(), dados.getStatusConexao(), dados.getFkAdministrador(), dados.getFkEmpresa());
     }
 
     public void setComponente(Processador processador) {
@@ -159,7 +231,7 @@ public class MaquinaRepository {
                             descricao_componente = '%s'
                         and
                             numero_serial = '%s'
-                        """, redeAtual.getNomeExibicao(),redeAtual.getEnderecoMac()), new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
+                        """, redeAtual.getNomeExibicao(), redeAtual.getEnderecoMac()), new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
 
         List<EspecificacaoComponente> especificacaoComponentesLocal =
                 conMysql.query(String.format("""
@@ -171,12 +243,12 @@ public class MaquinaRepository {
                             descricao_componente = '%s'
                         and
                             numero_serial = '%s'
-                        """, redeAtual.getNomeExibicao(),redeAtual.getEnderecoMac()), new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
+                        """, redeAtual.getNomeExibicao(), redeAtual.getEnderecoMac()), new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
 
         if (especificacaoComponentes.isEmpty()) {
             con.execute(String.format("insert into especificacao_componente" +
                             "(tipo_componente,descricao_componente, numero_serial) values ('%s', '%s','%s')",
-                    "REDE",redeAtual.getNomeExibicao(), redeAtual.getEnderecoMac()));
+                    "REDE", redeAtual.getNomeExibicao(), redeAtual.getEnderecoMac()));
 
             especificacaoComponentes =
                     con.query(String.format("""
@@ -188,18 +260,18 @@ public class MaquinaRepository {
                                 descricao_componente = '%s'
                             and
                                 numero_serial = '%s'
-                            """, redeAtual.getNomeExibicao(),redeAtual.getEnderecoMac()), new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
+                            """, redeAtual.getNomeExibicao(), redeAtual.getEnderecoMac()), new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
 
         }
         EspecificacaoComponente dados = especificacaoComponentes.get(0);
         if (especificacaoComponentesLocal.isEmpty()) {
             conMysql.execute(String.format("insert into especificacao_componente" +
                             "(id_especificacao_componente,tipo_componente,descricao_componente, numero_serial) values (%d,'%s', '%s','%s')",
-                    dados.getIdEspecComponente(),"REDE",redeAtual.getNomeExibicao(),redeAtual.getEnderecoMac()));
+                    dados.getIdEspecComponente(), "REDE", redeAtual.getNomeExibicao(), redeAtual.getEnderecoMac()));
         }
 
         especificacoesComponente.add(new EspecificacaoComponente(dados.getIdEspecComponente(),
-                dados.getTipoComponente(), dados.getNomeFabricante(), dados.getDescricaoComponente(),dados.getNumeroSerial()));
+                dados.getTipoComponente(), dados.getNomeFabricante(), dados.getDescricaoComponente(), dados.getNumeroSerial()));
     }
 
     public void setComponente(Volume disco) {
@@ -268,88 +340,86 @@ public class MaquinaRepository {
         }
     }
 
-    public void setMaquinaUltrassomEspec() {
-        public MaquinaUltrassomEspecificada getMaquiUltassomEspecCPU(Double usoMaximo, Integer fkMaquina, Integer fkEspecComp) {
-            Integer usoMaximotoInt = usoMaximo.intValue();
-            List<MaquinaUltrassomEspecificada> maquinaUltraEspec = con.query(String.format("""
-                        select
-                            m.*
-                        from 
-                            maquina_ultrassom_especificada m
-                        join 
-                            especificacao_componente e
-                        on
-                            m.fk_especificacao_componente = e.id_especificacao_componente
-                        where 
-                            uso_maximo = %d
-                        and fk_maquina = %d
-                        and fk_especificacao_componente = %d                
-                        and e.tipo_componente = 'CPU';
-                    """, usoMaximotoInt, fkMaquina, fkEspecComp),
-                    new BeanPropertyRowMapper<>(MaquinaUltrassomEspecificada.class));
+    public void setMaquinaUltrassomEspec(Double usoMaximo, Integer fkMaquina, Integer fkEspecComp) {
+        Integer usoMaximotoInt = usoMaximo.intValue();
+        List<MaquinaUltrassomEspec> maquinaUltraEspec = con.query(String.format("""
+                            select
+                                m.*
+                            from 
+                                maquina_ultrassom_especificada m
+                            join 
+                                especificacao_componente e
+                            on
+                                m.fk_especificacao_componente = e.id_especificacao_componente
+                            where 
+                                uso_maximo = %d
+                            and fk_maquina = %d
+                            and fk_especificacao_componente = %d                
+                            and e.tipo_componente = 'CPU';
+                        """, usoMaximotoInt, fkMaquina, fkEspecComp),
+                new BeanPropertyRowMapper<>(MaquinaUltrassomEspec.class));
 
-            List<MaquinaUltrassomEspecificada> maquinaUltraEspecLocal = conMysql.query(String.format("""
-                        select
-                            m.*
-                        from 
-                            maquina_ultrassom_especificada m
-                        join 
-                            especificacao_componente e
-                        on
-                            m.fk_especificacao_componente = e.id_especificacao_componente
-                        where 
-                            uso_maximo = %d
-                        and fk_maquina = %d
-                        and fk_especificacao_componente = %d                
-                        and e.tipo_componente = 'CPU';
-                    """, usoMaximotoInt, fkMaquina, fkEspecComp),
-                    new BeanPropertyRowMapper<>(MaquinaUltrassomEspecificada.class));
+        List<MaquinaUltrassomEspec> maquinaUltraEspecLocal = conMysql.query(String.format("""
+                            select
+                                m.*
+                            from 
+                                maquina_ultrassom_especificada m
+                            join 
+                                especificacao_componente e
+                            on
+                                m.fk_especificacao_componente = e.id_especificacao_componente
+                            where 
+                                uso_maximo = %d
+                            and fk_maquina = %d
+                            and fk_especificacao_componente = %d                
+                            and e.tipo_componente = 'CPU';
+                        """, usoMaximotoInt, fkMaquina, fkEspecComp),
+                new BeanPropertyRowMapper<>(MaquinaUltrassomEspec.class));
 
-            if (maquinaUltraEspec.isEmpty()) {
-                con.execute(String.format("""
-                        insert into maquina_ultrassom_especificada 
-                            (uso_maximo, fk_maquina, fk_especificacao_componente)
-                        values (%d, %d, %d);
-                      """, usoMaximotoInt, fkMaquina, fkEspecComp));
+        if (maquinaUltraEspec.isEmpty()) {
+            con.execute(String.format("""
+                      insert into maquina_ultrassom_especificada 
+                          (uso_maximo, fk_maquina, fk_especificacao_componente)
+                      values (%d, %d, %d);
+                    """, usoMaximotoInt, fkMaquina, fkEspecComp));
 
-                maquinaUltraEspec
-                        = con.query(String.format("""
-                        select
-                            m.*
-                        from 
-                            maquina_ultrassom_especificada m
-                        join 
-                            especificacao_componente e
-                        on
-                            m.fk_especificacao_componente = e.id_especificacao_componente
-                        where 
-                            uso_maximo = %d
-                        and fk_maquina = %d
-                        and fk_especificacao_componente = %d                
-                        and e.tipo_componente = 'CPU';
-                    """, usoMaximotoInt,fkMaquina, fkEspecComp),
-                        new BeanPropertyRowMapper<>(MaquinaUltrassomEspecificada.class));
-            }
-
-            if (maquinaUltraEspecLocal.isEmpty()) {
-                MaquinaUltrassomEspecificada dados = maquinaUltraEspec.get(0);
-
-                conMysql.execute(String.format("""
-                        insert into maquina_ultrassom_especificada 
-                            (id_especificacao_componente_maquina,uso_maximo, fk_maquina, fk_especificacao_componente)
-                        values (%d,%d, %d, %d);
-                      """,dados.getId_especificacao_componente_maquina(),usoMaximotoInt, fkMaquina, fkEspecComp));
-            }
-
-            MaquinaUltrassomEspecificada dados = maquinaUltraEspec.get(0);
-
-            System.out.println("ESPEFIFICAÇÃO DE COMPONENTES CADASTRADOS COM SUCESSO!");
-            return new MaquinaUltrassomEspecificada(dados.getId_especificacao_componente_maquina(),
-                    dados.getUso_maximo(),
-                    dados.getFk_maquina(),
-                    dados.getFk_especificacao_componente());
+            maquinaUltraEspec
+                    = con.query(String.format("""
+                                select
+                                    m.*
+                                from 
+                                    maquina_ultrassom_especificada m
+                                join 
+                                    especificacao_componente e
+                                on
+                                    m.fk_especificacao_componente = e.id_especificacao_componente
+                                where 
+                                    uso_maximo = %d
+                                and fk_maquina = %d
+                                and fk_especificacao_componente = %d                
+                                and e.tipo_componente = 'CPU';
+                            """, usoMaximotoInt, fkMaquina, fkEspecComp),
+                    new BeanPropertyRowMapper<>(MaquinaUltrassomEspec.class));
         }
+
+        if (maquinaUltraEspecLocal.isEmpty()) {
+            MaquinaUltrassomEspec dados = maquinaUltraEspec.get(0);
+
+            conMysql.execute(String.format("""
+                      insert into maquina_ultrassom_especificada 
+                          (id_especificacao_componente_maquina,uso_maximo, fk_maquina, fk_especificacao_componente)
+                      values (%d,%d, %d, %d);
+                    """, dados.getIdEspecMaquina(), usoMaximotoInt, fkMaquina, fkEspecComp));
+        }
+
+        MaquinaUltrassomEspec dados = maquinaUltraEspec.get(0);
+
+        maquinasUltrassomEspecs.add(new MaquinaUltrassomEspec(dados.getIdEspecMaquina(),
+                dados.getUsoMaximo(),
+                dados.getFkMaquina(),
+                dados.getFkEspecComponente()));
     }
+
 
     public MaquinaUltrassom getMaquinaUltrassom() {
         return maquinaUltrassom;
