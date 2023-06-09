@@ -34,7 +34,7 @@ public class RetriaLogin {
                 System.out.println("Insira a senha");
                 senha = leitor.nextLine();
 
-                if (userRepository.existsAdministradorByEmailAndSenha(email,senha)) {
+                if (userRepository.existsAdministradorByEmailAndSenha(email, senha)) {
                     System.out.println("Email validao com sucesso! Iniciando programa!");
                     service.startMachineSettings(userRepository);
                 } else {
@@ -49,5 +49,6 @@ public class RetriaLogin {
             default:
                 System.out.println("Opção inválida! Tente novamente");
         }
+
     }
 }

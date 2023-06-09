@@ -3,15 +3,15 @@ package com.projeto.individual.retria.domain.maquina;
 import com.projeto.individual.retria.infra.componentes.TipoComponente;
 
 public class EspecificacaoComponente {
-    private Integer idEspecComponente;
+    private Integer idEspecificacaoComponente;
     private TipoComponente tipoComponente;
     private String nomeFabricante;
     private String descricaoComponente;
     private String numeroSerial;
 
-    public EspecificacaoComponente(Integer idEspecComponente, TipoComponente tipoComponente, String nomeFabricante,
+    public EspecificacaoComponente(Integer idEspecificacaoComponente, TipoComponente tipoComponente, String nomeFabricante,
                                    String descricaoComponente, String numeroSerial) {
-        this.idEspecComponente = idEspecComponente;
+        this.idEspecificacaoComponente = idEspecificacaoComponente;
         this.tipoComponente = tipoComponente;
         this.nomeFabricante = nomeFabricante;
         this.descricaoComponente = descricaoComponente;
@@ -21,12 +21,12 @@ public class EspecificacaoComponente {
     public EspecificacaoComponente() {
     }
 
-    public Integer getIdEspecComponente() {
-        return idEspecComponente;
+    public Integer getIdEspecificacaoComponente() {
+        return idEspecificacaoComponente;
     }
 
-    public void setIdEspecComponente(Integer idEspecComponente) {
-        this.idEspecComponente = idEspecComponente;
+    public void setIdEspecificacaoComponente(Integer idEspecificacaoComponente) {
+        this.idEspecificacaoComponente = idEspecificacaoComponente;
     }
 
     public TipoComponente getTipoComponente() {
@@ -74,6 +74,6 @@ public class EspecificacaoComponente {
                 Numero serial: %s
                 ==================================
                 
-                """,idEspecComponente,tipoComponente,nomeFabricante,descricaoComponente,numeroSerial);
+                """, idEspecificacaoComponente,tipoComponente,nomeFabricante,descricaoComponente,numeroSerial);
     }
 }

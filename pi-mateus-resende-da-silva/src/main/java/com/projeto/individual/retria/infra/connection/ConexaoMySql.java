@@ -13,12 +13,12 @@ public class ConexaoMySql {
 
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
-        //dataSource.setUrl("jdbc:mysql://localhost:3306/retria");
-        dataSource.setUrl("jdbc:mysql://0.0.0.0:3306/retria?autoReconnect=true&useSSL=false");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/retria");
+        //dataSource.setUrl("jdbc:mysql://0.0.0.0:3306/retria?autoReconnect=true&useSSL=false");
 
         dataSource.setUsername("root");
 
-        dataSource.setPassword("urubu100");
+        dataSource.setPassword("#Gf47592527898");
 
         this.connection = new JdbcTemplate(dataSource);
     }

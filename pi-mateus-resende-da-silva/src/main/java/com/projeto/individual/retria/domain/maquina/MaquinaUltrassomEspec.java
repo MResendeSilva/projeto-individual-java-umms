@@ -1,27 +1,27 @@
 package com.projeto.individual.retria.domain.maquina;
 
 public class MaquinaUltrassomEspec {
-    private Integer idEspecMaquina;
+    private Integer idEspecificacaoComponenteMaquina;
     private Double usoMaximo;
     private Integer fkMaquina;
-    private Integer fkEspecComponente;
+    private Integer fkEspecificacaoComponente;
 
-    public MaquinaUltrassomEspec(Integer idEspecMaquina, Double usoMaximo, Integer fkMaquina, Integer fkEspecComponente) {
-        this.idEspecMaquina = idEspecMaquina;
+    public MaquinaUltrassomEspec(Integer idEspecificacaoComponenteMaquina, Double usoMaximo, Integer fkMaquina, Integer fkEspecificacaoComponente) {
+        this.idEspecificacaoComponenteMaquina = idEspecificacaoComponenteMaquina;
         this.usoMaximo = usoMaximo;
         this.fkMaquina = fkMaquina;
-        this.fkEspecComponente = fkEspecComponente;
+        this.fkEspecificacaoComponente = fkEspecificacaoComponente;
     }
 
     public MaquinaUltrassomEspec() {
     }
 
-    public Integer getIdEspecMaquina() {
-        return idEspecMaquina;
+    public Integer getIdEspecificacaoComponenteMaquina() {
+        return idEspecificacaoComponenteMaquina;
     }
 
-    public void setIdEspecMaquina(Integer idEspecMaquina) {
-        this.idEspecMaquina = idEspecMaquina;
+    public void setIdEspecificacaoComponenteMaquina(Integer idEspecificacaoComponenteMaquina) {
+        this.idEspecificacaoComponenteMaquina = idEspecificacaoComponenteMaquina;
     }
 
     public Double getUsoMaximo() {
@@ -40,12 +40,12 @@ public class MaquinaUltrassomEspec {
         this.fkMaquina = fkMaquina;
     }
 
-    public Integer getFkEspecComponente() {
-        return fkEspecComponente;
+    public Integer getFkEspecificacaoComponente() {
+        return fkEspecificacaoComponente;
     }
 
-    public void setFkEspecComponente(Integer fkEspecComponente) {
-        this.fkEspecComponente = fkEspecComponente;
+    public void setFkEspecificacaoComponente(Integer fkEspecificacaoComponente) {
+        this.fkEspecificacaoComponente = fkEspecificacaoComponente;
     }
 
     @Override
@@ -60,6 +60,6 @@ public class MaquinaUltrassomEspec {
                 Fk componente: %s
                 ==================================
                 
-                """,idEspecMaquina,usoMaximo,fkMaquina,fkEspecComponente);
+                """, idEspecificacaoComponenteMaquina,usoMaximo,fkMaquina, fkEspecificacaoComponente);
     }
 }

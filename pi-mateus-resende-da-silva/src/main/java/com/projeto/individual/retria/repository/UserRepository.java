@@ -40,12 +40,13 @@ public class UserRepository {
         if (!administrador.isEmpty()) {
             Administrador dados = administrador.get(0);
 
-            verifyLocalAdministrador();
-            getEmpresaByAdministrador();
-
             this.administrador = new Administrador(dados.getIdAdministrador(), dados.getNomeAdministrador(),
                     dados.getEmailAdministrador(), dados.getSenhaAdministrador(),dados.getTelefoneAdministrador(),
                     dados.getChaveSegurancaAdministrador(), dados.getFkOcupacao(), dados.getFkEmpresa());
+
+            getEmpresaByAdministrador();
+            verifyLocalAdministrador();
+
             return true;
         }
 
@@ -62,15 +63,15 @@ public class UserRepository {
                         WHERE
                             email_administrador = '%s'
                         AND senha_administrador = '%s';
-                        """, administrador.getEmailAdministrador(), administrador.getSenhaAdministrador()),
+                        """, this.administrador.getEmailAdministrador(), this.administrador.getSenhaAdministrador()),
                 new BeanPropertyRowMapper(Administrador.class));
 
-        if (!administradoresLocal.isEmpty()) {
+        if (administradoresLocal.isEmpty()) {
             conMysql.execute(String.format("insert into administrador values"
                             + " (%d, '%s', '%s', '%s', '%s', '%s', %d, %d)",
-                    administrador.getIdAdministrador(), administrador.getNomeAdministrador(),
-                    administrador.getEmailAdministrador(), administrador.getSenhaAdministrador(),administrador.getTelefoneAdministrador(),
-                    administrador.getChaveSegurancaAdministrador(), administrador.getFkOcupacao(), administrador.getFkEmpresa()));
+                    this.administrador.getIdAdministrador(), this.administrador.getNomeAdministrador(),
+                    this.administrador.getEmailAdministrador(), this.administrador.getSenhaAdministrador(),this.administrador.getTelefoneAdministrador(),
+                    this.administrador.getChaveSegurancaAdministrador(), this.administrador.getFkOcupacao(), this.administrador.getFkEmpresa()));
         }
 
     }

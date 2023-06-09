@@ -1,0 +1,50 @@
+<------- Olá, este é Log de erros de Ping - Retria --------->
+
+================================================================================
+Arquivo = 2023-06-09 log-de-erros
+Data = 2023-06-09
+================================================================================
+
+<------- Informações da máquina --------->
+
+Numero serial = BFEBFBFF000A0655
+Administrador = Lucas Silva
+Sistema operacional = Windows
+Status da maquina = true
+
+================================================================================
+Processador ----->
+Fabricante: GenuineIntel
+Nome: Intel(R) Core(TM) i5-10600KF CPU @ 4.10GHz
+ID: BFEBFBFF000A0655
+Identificador: Intel64 Family 6 Model 165 Stepping 5
+Microarquitetura: unknown
+Frequência: 4104000000
+Número de Pacotes Físicos: 1
+Número de CPUs Fisícas: 6
+Número de CPUs Lógicas: 12
+Em Uso: 6,7
+
+
+Memória ram ----->
+Memoria
+Em uso: 9,0 GiB
+Disponível: 6,9 GiB
+Total: 15,9 GiB
+
+
+Disco ----->
+UUID: 8100ebb2-032c-4967-95dd-b5fab5ce4bc6
+nome: Disco Fixo Local (C:)
+volume: \\?\Volume{8100ebb2-032c-4967-95dd-b5fab5ce4bc6}\
+total: 239324762112
+disponível: 30556073984
+tipo: NTFS
+ponto de montagem: C:\
+
+================================================================================
+<------- OCORRÊNCIAS --------->
+
+
+09/06/2023 16:37:36 - Error on ping 34.235.138.209 - return code 1 => 
+09/06/2023 17:00:11 - Error on ping 34.235.138.209 - return code 1 => 

@@ -1,6 +1,7 @@
 package com.projeto.individual.retria.domain.maquina;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MetricaComponente {
     private Integer idMetricaComponente;
@@ -18,6 +19,10 @@ public class MetricaComponente {
     }
 
     public MetricaComponente() {
+    }
+
+    public String getDateFormatedSql () {
+        return dtMetrica.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public Integer getIdMetricaComponente() {
@@ -48,15 +53,17 @@ public class MetricaComponente {
         this.fkEspecificacaoComponente = fkEspecificacaoComponente;
     }
 
+
+
     @Override
     public String toString() {
         return String.format("""
                 ==================================
-                Metrica componente
+                Metrica componente - Atual
                 
                 Id: %d
                 Data alerta: %s
-                Uso maximo: %.2f
+                Uso atual: %.2f
                 Fk componente: %s
                 ==================================
                 
